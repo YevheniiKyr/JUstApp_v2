@@ -1,13 +1,13 @@
-import React, {useContext, useEffect, useLayoutEffect, useMemo, useState} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Context} from "../index";
-import {Button, Container, Form, Row} from "react-bootstrap";
+import {Button, Container, Row} from "react-bootstrap";
 
 import {observer} from "mobx-react-lite";
 import {useNavigate, useParams} from "react-router-dom";
-import {fetchBasket, fetchBasketById} from "../http/cartApi";
-import {fetchOneProduct, fetchProductsArray} from "../http/productApi";
+import {fetchBasketById} from "../http/cartApi";
+import {fetchProductsArray} from "../http/productApi";
 import ProductItemInBasket from "../Components/productItemInBasket";
-import {ADMIN_ROUTE, CHECK_ORDER_ROUTE, ORDER_ROUTE} from "../utils/constRoutes";
+import {ORDER_ROUTE} from "../utils/constRoutes";
 
 
 const BasketPage = observer(() => {
@@ -19,83 +19,81 @@ const BasketPage = observer(() => {
     const navigate = useNavigate()
 
 
-    useEffect(() => {
+      useEffect(() => {
+
+               fetchBasketById(id).then(data => {
+                   console.log("FETCH BASKET")
+                   basket.setBasket(data)
+                   let ids = []
+
+                   basket.basket.products.map((prod) => ((prod.product !== undefined) ? ids.push(prod.product) : {}))
+               //    basket.basket.products.map((prod) => ( ids.push(prod.product)))
+
+                   if (ids.length > 0) {
+                       console.log("SET PRODS")
+                       fetchProductsArray(ids).then(data => {
+                           basket.setProducts(data)
+                           let amounts = []
+                           basket.products.map(prod => amounts.push(basket.basket.products.find(({product}) => product === prod._id).amount))
+                           setAmounts(amounts)
+                       })
+
+                   }
+
+               })
+           }
+
+           , [])
 
 
-            fetchBasketById(id).then(data => {
-                console.log("FETCH BASKET")
-                basket.setBasket(data)
-                let ids = []
-
-                basket.basket.products.map((prod) => ((prod.product !== undefined) ? ids.push(prod.product) : {}))
-
-                if (ids.length > 0) {
-                    console.log("SET PRODS")
-                    fetchProductsArray(ids).then(data => {
-                        basket.setProducts(data)
-                    })
-
-                } else {
-                    console.log("SMTH WENT WRONG")
-
-                }
-
-                let amounts = []
-                basket.products.map( prod => amounts.push(basket.basket.products.find(({product}) => product === prod._id).amount))
-                setAmounts(amounts)
-            })
-        }
-
-
-        , [])
-
-
-
-
-   const [amounts, setAmounts] = useState([])
-
+    const [amounts, setAmounts] = useState([])
 
 
     return (
 
-        <Container>
-            {
-                (basket.products.length === 0) ?
 
-                    <img className={"d-flex m-auto"}
-                         src={require("../static/cart_rofl.webp")} width={"500rem"} alt={"basket"}/>
+                <Container >
+                    {
+                        (basket.products.length === 0) ?
 
-                    :
-                    (
-                        <Row className="d-flex ">
-                            {
-                            basket.products.map(
-                                (prod, index) => <ProductItemInBasket key={prod._id} product={prod}
-                                                         amount={amounts[index]}
-                        />)
+                            <img className={"d-flex m-auto"}
+                                 src={ require("../static/cart_rofl.webp") } width={"500rem"} alt={"basket"}/>
 
-                            }
-                        </Row>
-                    )
-            }
+                            :
+                            (
+                                <Row className="d-flex m-auto">
+                                    {
+                                        basket.products.map(
+                                            (prod, index) => <ProductItemInBasket key={prod._id} product={prod}
+                                                                                  amount={amounts[index]}
+                                            />)
 
-                {
-                    (basket.products.length !== 0) ?
-                        <Button
-                            onClick={() => navigate(ORDER_ROUTE + '/' + basket.basket._id)}
-                            className={"d-flex align-self-center"}
-                            style={{margin: 5}}
-                            variant={"outline-dark"}
-                        >
-                            Переглянути замовлення
-                        </Button>
-                        :
-                        <></>
-                }
+                                    }
+                                </Row>
+                            )
+                    }
 
-        </Container>
-    );
+                    {
+                        (basket.products.length !== 0) ?
+                            <Container className={"d-flex justify-content-center mt-5 "}
+                            >
+                            <Button
+                                size={"lg"}
+                                onClick={() => navigate(ORDER_ROUTE + '/' + basket.basket._id)}
+                                style={{margin: 5, background: "#F59B56", border: "none"}}
+
+                            >
+                                Переглянути замовлення
+                            </Button>
+                                </Container>
+                            :
+                            <></>
+                    }
+
+                </Container>
+            );
+
+
 })
-
 
 export default BasketPage;

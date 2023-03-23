@@ -1,23 +1,38 @@
-import React, {useContext, useEffect, useLayoutEffect, useState} from 'react';
-import {Button, Container, Form, Row, Table} from "react-bootstrap";
-import {Context} from "../index";
+import React, { useEffect, useState} from 'react';
+import {Button, Container, Table} from "react-bootstrap";
 
 import {observer} from "mobx-react-lite";
-import ReviewItem from "./ReviewItem";
-import {fetchProductsArray, fetchReviews} from "../http/productApi";
 import {fetchOrders, updateOrderStatus} from "../http/orderApi";
-import OrderItem from "./orderItem";
 import styled from "styled-components";
-import {fetchUser, fetchUsersArray} from "../http/userApi";
+import {fetchUsersArray} from "../http/userApi";
 
-const OrderList = observer(({ordersToList,users}) => {
+const OrderList = observer(() => {
 
-        let [orders, setOrders] = useState(ordersToList)
-        let [orderUsers, setOrderUsers] = useState(users)
+        let [orders, setOrders] = useState([])
+        let [orderUsers, setOrderUsers] = useState([])
 
-       useEffect(() => {
-        console.log("ORDERS " + ordersToList)
-        }, [])
+    useEffect(() => {
+
+        fetchOrders().then(data => {
+
+            orders = data
+            let ids = []
+            data.map(ord => ids.push(ord.user))
+
+            if (ids.length > 0) {
+                console.log("IDS > 0" + ids)
+                fetchUsersArray(ids).then(data => {
+
+                    setOrderUsers(data)
+                    setOrders(orders)
+                })
+            } else {
+                console.log("IDS = 0" + ids)
+            }
+        })
+
+
+    }, [])
 
 
        /* const [buttonStates, setButtonStates] = useState(
@@ -78,14 +93,13 @@ const OrderList = observer(({ordersToList,users}) => {
 
                     {
 
-
                         orders.map(
                             (order, idx) => (
                                 <tr key={order._id}>
 
                                     <Mytd> {idx + 1}</Mytd>
                                     <Mytd style={{verticalAlign: "middle", textAlign: "center"}}>
-                                        {  orderUsers[0].email/*(orderUsers.find(user => user._id === order.user)).email*/}
+                                        { orderUsers[0].email/*(orderUsers.find(user => user._id === order.user)).email*/}
                                     </Mytd>
                                     <Mytd style={{verticalAlign: "middle", textAlign: "center"}}>
                                         {order.address.street + " " + order.address.house_num} </Mytd>
@@ -93,7 +107,7 @@ const OrderList = observer(({ordersToList,users}) => {
                                     <Mytd>
                                         {order.status}
                                         <Button
-                                            variant={order.status === "accepted" ? "success" : "primary"}
+                                            variant={order.status === "accepted" ?  "danger": "success"}
                                             onClick={() => changeStatus(order, idx)} className={"ms-4"}
                                             size={"sm"}> {order.status === "accepted" ? "Скасувати" : "Прийняти"} </Button>
                                     </Mytd>

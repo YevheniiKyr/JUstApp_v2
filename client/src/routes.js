@@ -16,10 +16,7 @@ import purchasePage from "./Pages/purchasePage";
 import manageOrdersPage from "./Pages/manageOrdersPage";
 
 export const authRoutes = [
-    {
-        path: ADMIN_ROUTE,
-        Component: AdminPage
-    },
+
     {
         path: BASKET_ROUTE + '/:id',
         Component: basketPage
@@ -32,10 +29,14 @@ export const authRoutes = [
         path: ORDER_ROUTE + '/:id' ,
         Component: orderPage
     },
- /*  {
-       path: CHECK_ORDER_ROUTE + '/:id'
-        Component
-    }*/
+
+
+]
+export const adminRoutes = [
+    {
+        path: ADMIN_ROUTE,
+        Component: AdminPage
+    },
     {
         path: SHOW_ORDERS_ROUTE  ,
         Component: manageOrdersPage
@@ -56,7 +57,8 @@ export const publicRoutes = [
     },
     {
         path: REGISTRATION_ROUTE,
-        Component: authPage},
+        Component: authPage
+    },
     {
         path: PRODUCT_ROUTE + '/:id',
         Component: productPage

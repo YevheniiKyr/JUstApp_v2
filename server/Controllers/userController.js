@@ -1,16 +1,15 @@
 const User = require("../Models/User");
 const bcrypt = require("bcrypt");
 const {ObjectId} = require("bson");
-const Product = require("../Models/product");
 
 class UserController {
 
 
-    async getAll (req,res) {
+    async getAll(req, res) {
         try {
-            let id = []
-            id = req.query.id
-            if(id) {
+
+            let id = req.query.id
+            if (id) {
                 console.log("FETCH USER BY ID ARRAY")
                 id = id.map(id => new ObjectId(id))
                 const users = await User.find({
@@ -26,22 +25,22 @@ class UserController {
         }
     }
 
-    async getByID (req,res) {
+    async getByID(req, res) {
         console.log("WE GET USER BY ID")
         try {
 
             const user = await User.findById(req.params.id);
             //  const { password, ...others } = user._doc;
             res.json(user);
-        } catch(e){
+        } catch (e) {
             res.status(500).json(e)
         }
 
     }
 
-    async update(req,res) {
+    async update(req, res) {
         if (req.body.password) {
-            req.body.password = bcrypt.hash(req.body.password,3)
+            req.body.password = bcrypt.hash(req.body.password, 3)
         }
 
         try {
@@ -50,7 +49,7 @@ class UserController {
                 {
                     $set: req.body,
                 },
-                { new: true }
+                {new: true}
             );
             res.status(200).json(updatedUser);
         } catch (err) {
@@ -59,25 +58,34 @@ class UserController {
     }
 
 
-    async delete (req,res) {
+    async delete(req, res) {
         try {
             const {id} = req.params
-            if(!id){
+            if (!id) {
                 res.status(400).json({message: 'no id'});
             }
             const deletedUser = await User.findByIdAndDelete(id);
-            if(deletedUser == null)
-            {
-                res.json({message :"Cant find user with this id"})
-            }
-            else res.json(deletedUser);
-        } catch(e){
+            if (deletedUser == null) {
+                res.json({message: "Cant find user with this id"})
+            } else res.json(deletedUser);
+        } catch (e) {
             res.status(500).json(e)
         }
 
     }
 
+    async deleteAll() {
 
+        User.deleteMany({}, (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('All documents deleted');
+            }
+        })
+
+
+    }
 }
 
 

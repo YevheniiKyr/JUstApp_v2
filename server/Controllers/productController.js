@@ -3,7 +3,7 @@ const Category = require("../Models/Category");
 const uuid = require('uuid')
 const path = require("path");
 const {ObjectId} = require("bson");
-//const path = require('path')
+
 class ProductController {
 
     async create (req,res) {
@@ -30,56 +30,78 @@ class ProductController {
     async getAll (req,res) {
 
         const filterCategory = req.query.category
+        const searchQuery = req.query.search
         let {limit, page} = req.query
         page = page || 1
         limit = limit || 15
-        console.log(limit)
+     //   console.log("LIMIT " + limit)
         const offset = page * limit - limit
+      //  console.log("OFFSET " + offset)
+       // console.log("PAGE " + page)
 
-        let id = []
-        id = req.query.id
-     //   console.log("ID ARRAY " + id)
+        let id = req.query.id
 
-        console.log("GET ALL")
         try {
-            console.log("TRY")
             if (id) {
-                console.log("ID IS PRESENT")
                 id = id.map(id => new ObjectId(id))
-                console.log("SO ITS ID ")
                 const products = await Product.find({
                     '_id': {$in: id}
                 })
-                console.log("WTF")
-
-                console.log(products)
                 res.json(products)
                 return
             }
-            console.log("BEFORE COUNT")
-            const count = await Product.count();
-            console.log("COUNT")
-            if (filterCategory) {
-                console.log("FILTER" + filterCategory)
 
+
+            let count = await Product.count();
+
+            if (filterCategory && searchQuery) {
+
+                const regex = new RegExp(searchQuery, 'i');
+           //     console.log("BEFORE")
+
+                const products = await Product.find({
+                    category: filterCategory,
+                     title: regex
+
+                 }).skip(offset).limit(limit)
+                count = products.length
+             //   console.log("RETURN")
+                return res.json({products, count})
+
+            }
+            if(searchQuery){
+                const regex = new RegExp(searchQuery, 'i');
+                const products = await Product.find({
+                    title: regex
+                }).skip(offset).limit(limit)
+                count = products.length
+                res.json({products, count})
+                return
+
+            }
+            if(filterCategory){
                 const products = await Product.find({
                     category: filterCategory
                 }).skip(offset).limit(limit)
-
-                /*  const products = await Product.find({
-                      category: filterCategory
-                  })*/
+                count = products.length
                 res.json({products, count})
-            } else {
+                return
+            }
 
-                console.log("no filter")
 
+            if(page && limit) {
+            //    console.log("PAGE LIMIT")
+                const products = await Product.find().skip(offset).limit(limit);
+                res.json({products, count})
+            }
+            else{
+              //  console.log("no filter")
                 const products = await Product.find();
                 res.json({products, count})
             }
         }
         catch (e) {
-            console.log("error")
+            console.log(e)
             res.status(500).json(e)
         }
 
@@ -90,7 +112,7 @@ class ProductController {
     async getByID (req,res) {
         try {
 
-            console.log("here we go " + req.params.id)
+          //  console.log("here we go " + req.params.id)
             const product = await Product.findById(req.params.id);
             res.json(product);
         } catch(e){

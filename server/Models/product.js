@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const Product = new mongoose.Schema ({
+
     title: {type:String , required: true, unique: true },
     price: {type:Number , required: true},
     review:[{type:mongoose.Schema.Types.ObjectId, ref: 'Review'}],

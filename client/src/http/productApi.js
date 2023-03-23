@@ -1,6 +1,5 @@
 import {$authHost, $host} from "./index";
-import jwt_decode from "jwt-decode";
-import productList from "../Components/ProductList";
+
 
 export const createCategory = async (category) => {
     const {data} = await $authHost.post('category/', {
@@ -23,12 +22,14 @@ export const fetchOneProduct = async (id) => {
     return data
 }
 
-export const fetchProducts = async (cat) => {
+export const fetchProducts = async (cat, search, page, limit) => {
 
     const {data} = await $host.get('product/', {
         params: {
-            category: cat
-
+            category: cat,
+            search: search,
+            page: page,
+            limit: limit
         }
     })
 
@@ -85,4 +86,5 @@ export const deleteReview = async (id) => {
     )
     return data
 }
+
 

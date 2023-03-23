@@ -7,7 +7,7 @@ export default class BasketStore {
     constructor() {
 
         this._basket = null
-               this._products = [
+        this._products = [
 
         ]
         makeAutoObservable(this)

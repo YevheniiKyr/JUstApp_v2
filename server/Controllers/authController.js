@@ -6,9 +6,9 @@ const Basket = require('../Models/basket')
 const User = require('../Models/User')
 const jwt = require('jsonwebtoken')
 
-const genJWT = (id, email,birthdate, role) => {
+const genJWT = (_id, email,birthdate, role) => {
     return jwt.sign(
-        {id, email, birthdate, role},
+        {_id, email, birthdate, role},
         process.env.SECRET_KEY,
         {expiresIn: '12h'}
     )
@@ -66,15 +66,16 @@ class AuthController {
         if (!equalPasswords) {
             return res.status(400).json("You didn't inputpassword or email right  ")
         }
-        const token = genJWT(user.id, user.email, user.isAdmin)
+        const token = genJWT(user._id, user.email, user.role)
         return res.json({token})
     }
 
 
     async verify(req, res, next) {
-        const token = genJWT(req.user.id, req.user.email, req.user.role)
+        const token = genJWT(req.user._id, req.user.email, req.user.role)
         return res.json({token})
     }
+
 
 
 

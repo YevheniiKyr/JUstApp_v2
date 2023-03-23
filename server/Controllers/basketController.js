@@ -1,8 +1,7 @@
 const Basket = require("../Models/basket")
 const User = require("../Models/user")
-const Product = require("../Models/product")
-const mongoose  = require("mongoose")
-const {BSON, ObjectId} = require("bson");
+
+const {ObjectId} = require("bson");
 class BasketController {
 
 
@@ -44,7 +43,7 @@ class BasketController {
             let basket = await Basket.findOne({user: req.query.user});
             if(!basket){
                 console.log("YOU ARE STUPID")
-                 basket = await Basket.create({user: req.query.user})
+
             }
             console.log(basket)
             return res.json(basket)

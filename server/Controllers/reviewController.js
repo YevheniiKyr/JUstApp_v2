@@ -1,8 +1,6 @@
 
 const Review = require("../Models/review");
-const uuid = require('uuid')
-const path = require("path");
-//const path = require('path')
+
 class reviewController {
 
     async create (req,res) {
@@ -13,7 +11,7 @@ class reviewController {
 console.log("WE CREATE REVIEW " + review)
             const review_created = await Review.create(review)
 
-            return res.json(review)
+            return res.json(review_created)
         } catch (e) {
             res.status(500).json(e)
         }
@@ -24,7 +22,7 @@ console.log("WE CREATE REVIEW " + review)
     async getAllReviewsAboutProduct (req,res) {
         try {
 
-            console.log("REequest here in getAllReviewsAboutProduct")
+        //    console.log("REequest here in getAllReviewsAboutProduct")
             const {product_id} = req.query
             console.log(product_id)
             const reviews = await Review.find({product: product_id})
@@ -78,6 +76,19 @@ console.log("WE CREATE REVIEW " + review)
 
     }
 
+
+    async deleteAll() {
+
+        Review.deleteMany({}, (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log('All documents deleted');
+            }
+        })
+
+
+    }
 
 }
 

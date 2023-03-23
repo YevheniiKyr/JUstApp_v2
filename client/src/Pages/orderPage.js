@@ -1,5 +1,5 @@
-import React, {useContext, useEffect, useState} from 'react';
-import {Button, Container, Row, Table} from "react-bootstrap";
+import React, {useContext, useState} from 'react';
+import {Button, Container, Table} from "react-bootstrap";
 
 import styled from "styled-components";
 import StripeCheckout from "react-stripe-checkout";
@@ -45,8 +45,7 @@ const OrderPage = () => {
 
     const onOrderApprove = (billingAddress) => {
 
-        console.log("SO CREATE ORDER ")
-        console.log("USER ID " + user.user.id)
+
         createOrder({
             user: user.user.id,
             products: basket.basket.products,
@@ -103,24 +102,24 @@ const OrderPage = () => {
         </Table>
 
           <StripeCheckout
+
               name="Best Shop"
               image={require( "../static/himars.jpg" )}
               billingAddress
               shippingAddress
               description={`Your total is ${cart.total}`}
               amount={cart.total * 100}
-
               stripeKey={KEY}
               token={onToken}
           >
           <Button
 
               style={{
-              display:"block", float:"left", marginTop:  10, fontSize: 24
-
+              display:"block", float:"left", marginTop:  10, fontSize: 24,
+                background: "#F59B56", border:"none"
           }}
 
-           size={"lg"} onClick={() => onOrderApprove({street: "Shevchenka", house_num: 40},  )} variant="outline-primary">Підтвердити замовлення</Button>
+           size={"lg"} onClick={() => onOrderApprove({street: "Shevchenka", house_num: 40},  )} >Підтвердити замовлення</Button>
           </StripeCheckout>
       </Container>
     );
