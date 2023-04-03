@@ -1,5 +1,5 @@
 import './App.css';
-import {BrowserRouter} from "react-router-dom";
+import {BrowserRouter, useNavigate, useParams} from "react-router-dom";
 import AppRouter from "./Components/AppRouter";
 import NavBar from "./Components/NavBar";
 import {useContext, useEffect, useState} from "react";
@@ -13,13 +13,22 @@ function App() {
     const {user} = useContext(Context)
     const {basket} = useContext(Context)
     const [loading, setLoading] = useState(true)
+    const {optionsStore} = useContext(Context)
+
+
 
     useEffect(() => {
+        const url = window.location.pathname
+        console.log("URL " + url)
+        if (performance.navigation.type === 1) {
+            optionsStore.setPath(url)
+        }
 
-        if (localStorage.getItem('token')){
-            check().then(user_data =>{
+        if (localStorage.getItem('token')) {
+            check().then(user_data => {
                 user.setUser(user_data)
                 user.setIsAuth(true)
+
                 fetchBasket(user.user._id).then(data => {
                     basket.setBasket(data)
                     console.log("BASKET SET " + data)
@@ -28,21 +37,24 @@ function App() {
 
             }).finally(() => setLoading(false))
 
+        }
+
+        setLoading(false)
+    }, [])
+
+    if (loading) {
+        //  console.log(loading)
+        return <Spinner className={"d-flex justify-content-center align-content-center"}
+                        style={{width: "30rem", height: "30rem"}} animation={"border"}></Spinner>
     }
-        setLoading(false)},[])
-
-    if(loading) {
-      //  console.log(loading)
-        return <Spinner className={"d-flex justify-content-center align-content-center"} style = {{  width:"30rem", height:"30rem" }}  animation={"border"}></Spinner>
-    }
 
 
-  return (
-    <BrowserRouter>
-        <NavBar/>
-       <AppRouter/>
-    </BrowserRouter>
-  );
+    return (
+        <BrowserRouter>
+            <NavBar/>
+            <AppRouter/>
+        </BrowserRouter>
+    );
 }
 
 export default App;

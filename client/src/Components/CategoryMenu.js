@@ -30,7 +30,7 @@ const CategoryMenu = observer(() => {
             <Container>
                 <Row className="mt-5">
                     <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
+                        <Dropdown.Toggle style = {{background:'none', border: 'none', color: 'grey' }} id="dropdown-basic">
                             { product.currentCategory? product.currentCategory.name : "Category" }
                         </Dropdown.Toggle>
 

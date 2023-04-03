@@ -2,9 +2,11 @@ import React, { useEffect, useState} from 'react';
 import {Button, Container, Table} from "react-bootstrap";
 
 import {observer} from "mobx-react-lite";
-import {fetchOrders, updateOrderStatus} from "../http/orderApi";
+import {deleteOrder, fetchOrders, updateOrderStatus} from "../http/orderApi";
 import styled from "styled-components";
 import {fetchUsersArray} from "../http/userApi";
+
+
 
 const OrderList = observer(() => {
 
@@ -15,16 +17,16 @@ const OrderList = observer(() => {
 
         fetchOrders().then(data => {
 
-            orders = data
+            let fetched_orders = data
             let ids = []
             data.map(ord => ids.push(ord.user))
 
             if (ids.length > 0) {
                 console.log("IDS > 0" + ids)
                 fetchUsersArray(ids).then(data => {
-
+                    console.log(data)
                     setOrderUsers(data)
-                    setOrders(orders)
+                    setOrders(fetched_orders)
                 })
             } else {
                 console.log("IDS = 0" + ids)
@@ -34,17 +36,23 @@ const OrderList = observer(() => {
 
     }, [])
 
+  /*  const Myth = styled.th`
+          vertical-align: middle;
+          text-align: center;
+          font-size: 24px;
+        `
 
-       /* const [buttonStates, setButtonStates] = useState(
-            Array(orders.length).fill({clicked: false})
-        );*/
+    const Mytd
+
+        = styled.td`
+          vertical-align: middle;
+          text-align: center;
+          font-size: 18px;
+
+        `*/
 
 
         const changeStatus = (order, index) => {
-            //  const newButtonStates = [...buttonStates];
-            // newButtonStates[index] = { clicked: true };
-            // setButtonStates(newButtonStates);
-
 
             order.status === "accepted" ? order.status = "pending" : order.status = "accepted"
 
@@ -52,27 +60,25 @@ const OrderList = observer(() => {
             const newArray = [...orders];
             newArray[index] = order
             setOrders(newArray)
-            updateOrderStatus(newArray).then(data =>
+            updateOrderStatus(order).then(data =>
                 console.log(data)
             )
 
         }
 
+    const removeOrder = (order, index) => {
 
-        const Myth = styled.th`
-          vertical-align: middle;
-          text-align: center;
-          font-size: 24px;
-        `
 
-        const Mytd
+        const newArray = [...orders].filter(ord => ord._id !== order._id);
+        setOrders(newArray)
+        deleteOrder(order._id).then(data =>
+            console.log(data)
+        )
 
-            = styled.td`
-          vertical-align: middle;
-          text-align: center;
-          font-size: 18px;
+    }
 
-        `
+
+
 
 
         return (
@@ -82,11 +88,11 @@ const OrderList = observer(() => {
                     <thead>
                     <tr>
 
-                        <Myth></Myth>
-                        <Myth>User</Myth>
-                        <Myth>Address</Myth>
-                        <Myth>Total</Myth>
-                        <Myth>Status</Myth>
+                        <th></th>
+                        <th>User</th>
+                        <th>Address</th>
+                        <th>Total</th>
+                        <th>Status</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -97,20 +103,25 @@ const OrderList = observer(() => {
                             (order, idx) => (
                                 <tr key={order._id}>
 
-                                    <Mytd> {idx + 1}</Mytd>
-                                    <Mytd style={{verticalAlign: "middle", textAlign: "center"}}>
-                                        { orderUsers[0].email/*(orderUsers.find(user => user._id === order.user)).email*/}
-                                    </Mytd>
-                                    <Mytd style={{verticalAlign: "middle", textAlign: "center"}}>
-                                        {order.address.street + " " + order.address.house_num} </Mytd>
-                                    <Mytd> {order.total || 1000}</Mytd>
-                                    <Mytd>
+                                    <td> {idx + 1}</td>
+                                    <td style={{verticalAlign: "middle", textAlign: "center"}}>
+                                        { orderUsers?.[0]?.email    /*(orderUsers.find(user => user._id === order.user)).email*/}
+                                    </td>
+                                    <td style={{verticalAlign: "middle", textAlign: "center"}}>
+                                        {order.address.street + " " + order.address.house_num} </td>
+                                    <td> {order.total || 1000}</td>
+                                    <td>
                                         {order.status}
                                         <Button
                                             variant={order.status === "accepted" ?  "danger": "success"}
                                             onClick={() => changeStatus(order, idx)} className={"ms-4"}
                                             size={"sm"}> {order.status === "accepted" ? "Скасувати" : "Прийняти"} </Button>
-                                    </Mytd>
+                                        <Button
+                                            className = "ms-4 btn-danger"
+
+                                            onClick={() => removeOrder(order, idx)}
+                                            size={"sm"}>  Видалити </Button>
+                                    </td>
 
                                 </tr>
                             )

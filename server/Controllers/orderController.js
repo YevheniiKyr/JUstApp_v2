@@ -54,17 +54,20 @@ class OrderController {
             const updatedOrder = await Order.findByIdAndUpdate(order._id,  order, {new:true} );
             return res.json(updatedOrder);
         } catch(e){
+            console.log(e)
             res.status(500).json(e)
         }
 
     }
     async delete (req,res) {
         try {
+            console.log("WE ARE DELETING ORDER")
             const {id} = req.params
+            console.log("ORDER " + id)
             if(!id){
                 res.status(400).json({message: 'no id'});
             }
-            const deletedOrder = await Product.findByIdAndDelete(id);
+            const deletedOrder = await Order.findByIdAndDelete(id);
 
             if(deletedOrder == null)
             {
@@ -72,6 +75,7 @@ class OrderController {
             }
             else res.json(deletedOrder);
         } catch(e){
+            console.log(e)
             res.status(500).json(e)
         }
 

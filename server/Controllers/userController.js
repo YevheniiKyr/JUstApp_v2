@@ -9,11 +9,12 @@ class UserController {
         try {
 
             let id = req.query.id
+
             if (id) {
-                console.log("FETCH USER BY ID ARRAY")
-                id = id.map(id => new ObjectId(id))
+                console.log("FETCH USER BY ID ARRAY " + id)
+                let new_id = id.map(_id => new ObjectId(_id))
                 const users = await User.find({
-                    '_id': {$in: id}
+                    '_id': {$in: new_id}
                 })
                 res.json(users);
                 return
@@ -21,6 +22,7 @@ class UserController {
             const users = await User.find();
             res.json(users);
         } catch (e) {
+            console.log(e)
             res.status(500).json(e)
         }
     }

@@ -16,7 +16,7 @@ const ProductItem = observer(({product}) => {
         const [isHovered, setIsHovered] = useState(false);
 
         const [rating, setRating] = useState(0)
-        const {reviewsContext} = useContext(Context)
+        const {reviewsContext, product: products} = useContext(Context)
 
         useEffect(() => {
             let rates = []
@@ -27,29 +27,32 @@ const ProductItem = observer(({product}) => {
 
                     reviewsContext.reviews.map(rev => rates.push(rev.rating))
                 rates.length === 0 ?
+
                     setRating(5)
+
                     :
                     average = rates.reduce((a, b) => a + b) / rates.length
                     setRating(average)
-
 
                 }
             )
         }, [])
 
         return (
-            <Col lg={3} md={4} sm={6}
+            <Col lg={3} md={4} sm={6} xs={12}
             >
 
                 {
 
-                    <Container>
+                    <Container className={products.limit === 2 && "d-flex m-auto justify-content-center" }>
                         <Card
 
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
-                            onClick={() =>
+                            onClick={() =>{
+                                products.setCurrentRating(rating)
                                 navigate(PRODUCT_ROUTE + '/' + product._id)
+                            }
                             }
                             style={{
 
@@ -91,6 +94,8 @@ const ProductItem = observer(({product}) => {
                                     }}
                                     className={"d-flex m-auto btn-success"}
                                     onClick={() => {
+                                        console.log("RATINGHERRRRRRRRRRRRRRRRRRRRRRRRRRRRRR " + rating)
+                                        products.setCurrentRating(rating)
                                         navigate(PRODUCT_ROUTE + '/' + product._id)
                                         console.log(PRODUCT_ROUTE + '/' + product._id)
                                     }

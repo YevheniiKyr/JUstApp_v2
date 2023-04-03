@@ -1,6 +1,13 @@
 import {makeAutoObservable} from "mobx";
 
 export default class ProductStore {
+    get currentRating() {
+        return this._currentRating;
+    }
+
+    setCurrentRating(value) {
+        this._currentRating = value;
+    }
 
     constructor() {
         this._categories = []
@@ -10,6 +17,7 @@ export default class ProductStore {
         this._page = 1
         this._totalCount = 0
         this._limit = 6
+        this._currentRating = 0
         makeAutoObservable(this, {deep: true})
     }
 

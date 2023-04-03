@@ -14,16 +14,16 @@ const AdminPage = () => {
 
 
     return (
-        <Container className={"d-flex flex-column"}>
-            <Button className = "mt-3" onClick={()=>setCategoryVisible(true)}> Додати категорію</Button>
-            <Button className = "mt-3" onClick={()=>setProductVisible(true)}>  Додати товар </Button>
+        <Container className={"d-flex flex-column mt-4"} style={{width: '50%'}}>
+            <Button size = {"lg"} className = "mt-3 btn-success" onClick={()=>setCategoryVisible(true)}> Додати категорію</Button>
+            <Button size = {"lg"} className = "mt-3 btn-success" onClick={()=>setProductVisible(true)}>  Додати товар </Button>
             <AddCategory show = {categoryVisible}
                          onHide ={()=>setCategoryVisible(false)}
             />
             <AddProduct show = {productVisible}
                         onHide ={()=>setProductVisible(false)}
             />
-            <Button className = "mt-3" onClick={()=>navigate(SHOW_ORDERS_ROUTE )}> Керувати замовленнями </Button>
+            <Button size = {"lg"} className = "mt-3 btn-success" onClick={()=>navigate(SHOW_ORDERS_ROUTE )}> Керувати замовленнями </Button>
 
 
         </Container>

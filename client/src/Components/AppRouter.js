@@ -11,10 +11,10 @@ const AppRouter = observer(() => {
     return (
         <Routes>
 
-            {user.isAuth && user?.user?.role === 'ADMIN' && adminRoutes.map(({path, Component}) =>
+            {user?.isAuth && user?.user?.role === 'ADMIN' && adminRoutes.map(({path, Component}) =>
                 <Route key={path} path={path}  element={<Component/>} exact/>
             )}
-            {user.isAuth && authRoutes.map(({path, Component}) =>
+            {user?.isAuth && authRoutes.map(({path, Component}) =>
                 <Route key={path} path={path}  element={<Component/>} exact/>
             )}
             {publicRoutes.map(({path, Component}) =>

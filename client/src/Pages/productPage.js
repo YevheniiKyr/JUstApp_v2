@@ -2,7 +2,7 @@ import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import {ORDER_ROUTE} from "../utils/constRoutes";
 import {useNavigate, useParams} from "react-router-dom";
-import {addReviewToProduct, fetchOneProduct} from "../http/productApi";
+import {addReviewToProduct, fetchOneProduct, fetchReviews} from "../http/productApi";
 import styled from "styled-components";
 import {addProductToCart} from "../http/cartApi";
 import {observer} from "mobx-react-lite";
@@ -17,11 +17,13 @@ const MyButton = styled.button`
   font-size: 18px;
 `
 const ProductPage = observer(() => {
+
         const {id} = useParams()
         const navigate = useNavigate()
         const {user, basket} = useContext(Context)
+        const {reviewsContext, product: products} = useContext(Context)
 
-        const {reviewsContext} = useContext(Context)
+
         const addToCart = (product_id) => {
             addProductToCart(basket.basket._id, product_id, 1).then(data =>
                 console.log(data)
@@ -39,21 +41,18 @@ const ProductPage = observer(() => {
             reviewsContext.setReviews(newReviews)
         }
 
-        const [product, setProduct] = useState('')
+        const [product, setProduct] = useState({})
         const [comment, setComment] = useState('')
         const [rating, setRating] = useState(0);
-        const [productRating, setProductRating] = useState(0)
-        const handleRate = (value) => {
-            setRating(value);
-        };
+
 
         useEffect(() => {
             fetchOneProduct(id).then(date => {
                 setProduct(date)
-
-
             })
+
         }, [])
+
 
 
         return (
@@ -71,7 +70,7 @@ const ProductPage = observer(() => {
                                 {product.description}
                             </Card.Text>
                             <Container className={"d-flex justify-content-center"}>
-                                <Rating rating={productRating} editable={false}></Rating>
+                                <Rating rating={rating} product_id={id} editable={false}></Rating>
                             </Container>
                             <Form className={"d-flex justify-content-center "}>
                                 <Button size={"lg"} style={{background: "none", border: 'none'}}
@@ -95,11 +94,10 @@ const ProductPage = observer(() => {
                     <ReviewList product_id={id}/>
 
 
-
                     <Row className={"mt-3"}>
-                        <Col  md={9} lg={9} sm={9} xs={9}>
+                        <Col md={9} lg={9} sm={9} xs={9}>
                             <Form.Control
-                                style = {{resize : "none"}}
+                                style={{resize: "none"}}
                                 as="textarea"
                                 rows={3}
                                 value={comment}
@@ -108,11 +106,11 @@ const ProductPage = observer(() => {
                                 placeholder="Напишіть коментар"
                             />
 
-                            <Rating size = {35} editable={true} onRate={setRating}> </Rating>
+                            <Rating size={35} editable={true} onRate={setRating}> </Rating>
                         </Col>
 
 
-                        <Col className = {"justify-content-start"} md={3} lg={3} sm={3}  xs={3}>
+                        <Col className={"justify-content-start"} md={3} lg={3} sm={3} xs={3}>
                             <Button size="lg" className={"mt-5 btn-success "} onClick={() => addReview()}
                             >Надіслати</Button>
                         </Col>

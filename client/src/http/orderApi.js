@@ -24,3 +24,10 @@ export const updateOrderStatus = async (order) => {
     return data
 
 }
+
+export const deleteOrder = async (id) => {
+    const {data} = await $authHost.delete('order/' + id)
+    // console.log("ORDER CREATED HERE " + data)
+    return data
+
+}

@@ -1,25 +1,34 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect, useState} from 'react';
 import {Form, Row} from "react-bootstrap";
 import {Context} from "../index";
 import ProductItem from "./ProductItem";
 import {observer} from "mobx-react-lite";
+import useMediaQuery from "../hooks/useMediaQuery";
+
+
 
 const ProductList = observer(() => {
-    const {product} = useContext(Context)
-    return (
-        <Row className="d-flex m-auto ">
-            {
 
-                product.products.map(
 
-                prod => <ProductItem  key={prod._id} product = {prod} />
+        const {product, optionsStore} = useContext(Context)
 
-                )
 
-            }
-        </Row>
-    );
-}
+
+
+
+        return (
+            <Row className="d-flex m-auto ">
+                {
+
+                    product.products.map(
+
+                    prod => <ProductItem  key={prod._id} product = {prod} />
+
+                    )
+                }
+            </Row>
+        );
+    }
 )
 
 export default ProductList;

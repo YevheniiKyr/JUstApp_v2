@@ -45,9 +45,10 @@ const OrderPage = () => {
 
     const onOrderApprove = (billingAddress) => {
 
+        console.log("APPROVE")
 
         createOrder({
-            user: user.user.id,
+            user: user.user._id,
             products: basket.basket.products,
             address: billingAddress,
             status: "pending"
@@ -119,7 +120,7 @@ const OrderPage = () => {
                 background: "#F59B56", border:"none"
           }}
 
-           size={"lg"} onClick={() => onOrderApprove({street: "Shevchenka", house_num: 40},  )} >Підтвердити замовлення</Button>
+           size={"lg"} onClick={() => onOrderApprove({street: "Shevchenka", house_num: 40} )} >Підтвердити замовлення</Button>
           </StripeCheckout>
       </Container>
     );

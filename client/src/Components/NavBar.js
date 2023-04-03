@@ -5,9 +5,9 @@ import {Nav} from "react-bootstrap";
 import {Context} from "../index";
 import {observer} from "mobx-react-lite";
 import {useNavigate} from "react-router-dom";
-import {ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, SHOP_ROUTE} from "../utils/constRoutes";
+import {ADMIN_ROUTE, BASKET_ROUTE, LOGIN_ROUTE, SHOP_ROUTE, USER_ROUTE} from "../utils/constRoutes";
 import {FcShop} from "react-icons/fc"
-
+import {CiUser} from 'react-icons/ci'
 const NavBar = observer(() => {
     const {user, basket} = useContext(Context)
     const navigate = useNavigate()
@@ -62,6 +62,25 @@ const NavBar = observer(() => {
                                  src={ require("../static/shopping_cart_1.png") } width={"35px"} alt={"basket"}/>
 
                         </Button>
+
+                        <Button
+                            size = {"lg"}
+                            variant={"light"}
+                            style={{ marginRight: 15, border: 'none' }}
+                            onClick=
+                                {() => {
+                                  //  console.log(BASKET_ROUTE + '/' + basket.basket._id)
+                                    navigate(USER_ROUTE + '/' + user.user._id)
+                                }
+
+                                }
+
+                        >
+
+                            <CiUser></CiUser>
+
+                        </Button>
+
 
                         {
                         user.user.role === 'ADMIN' ?

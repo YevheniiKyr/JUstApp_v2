@@ -6,9 +6,9 @@ const Basket = require('../Models/basket')
 const User = require('../Models/User')
 const jwt = require('jsonwebtoken')
 
-const genJWT = (_id, email,birthdate, role) => {
+const genJWT = (_id, email, role) => {
     return jwt.sign(
-        {_id, email, birthdate, role},
+        {_id, email, role},
         process.env.SECRET_KEY,
         {expiresIn: '12h'}
     )
@@ -44,7 +44,7 @@ class AuthController {
             console.log('WE CREATED USER' + user)
 
             const basket = await Basket.create({user: user._id})
-            const token = genJWT(user._id, user.email, user.birthdate, user.role )
+            const token = genJWT(user._id, user.email, user.role )
             console.log(token)
             return res.json({token: token})
         }

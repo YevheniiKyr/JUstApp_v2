@@ -34,12 +34,12 @@ class ProductController {
         let {limit, page} = req.query
         page = page || 1
         limit = limit || 15
-     //   console.log("LIMIT " + limit)
         const offset = page * limit - limit
-      //  console.log("OFFSET " + offset)
-       // console.log("PAGE " + page)
 
         let id = req.query.id
+
+        let count = await Product.count();
+
 
         try {
             if (id) {
@@ -52,50 +52,63 @@ class ProductController {
             }
 
 
-            let count = await Product.count();
 
             if (filterCategory && searchQuery) {
 
                 const regex = new RegExp(searchQuery, 'i');
-           //     console.log("BEFORE")
+
+                const count = await Product.find({
+                    category: filterCategory
+                }).countDocuments()
 
                 const products = await Product.find({
                     category: filterCategory,
                      title: regex
 
                  }).skip(offset).limit(limit)
-                count = products.length
-             //   console.log("RETURN")
+
                 return res.json({products, count})
 
             }
+
+
             if(searchQuery){
+
                 const regex = new RegExp(searchQuery, 'i');
+
+                const count = await Product.find({
+                    category: filterCategory
+                }).countDocuments()
+
                 const products = await Product.find({
                     title: regex
                 }).skip(offset).limit(limit)
-                count = products.length
+
                 res.json({products, count})
                 return
 
             }
             if(filterCategory){
+
+                const count = await Product.find({
+                    category: filterCategory
+                }).countDocuments()
+
                 const products = await Product.find({
                     category: filterCategory
                 }).skip(offset).limit(limit)
-                count = products.length
+
                 res.json({products, count})
                 return
             }
 
-
             if(page && limit) {
-            //    console.log("PAGE LIMIT")
                 const products = await Product.find().skip(offset).limit(limit);
                 res.json({products, count})
             }
             else{
-              //  console.log("no filter")
+
+
                 const products = await Product.find();
                 res.json({products, count})
             }

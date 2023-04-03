@@ -11,12 +11,14 @@ import {AiTwotoneDelete} from "react-icons/ai"
 const ReviewItem = observer(({review}) => {
 
     const {user, reviewsContext} = useContext(Context)
-    let [userComment, setUserComment] = useState([])
+    let [userComment, setUserComment] = useState({})
 
     useEffect(() => {
-        fetchUser(review.user).then(data => setUserComment(data)).then(() => {
-            console.log(user.user.id + " " + userComment._id)
-        })
+
+            fetchUser(review.user).then(data => setUserComment(data)).then(() => {
+             //   console.log(user?.user?._id + " " + userComment._id)
+            })
+
     }, [])
 
 
@@ -105,7 +107,7 @@ const ReviewItem = observer(({review}) => {
                                 <Col xs={4} md={4} lg={4}>
 
                                         {
-                                            user.user.id === userComment._id ?
+                                            user.isAuth && user?.user?._id === userComment._id ?
 
                                                 <Container className={"d-flex"}>
                                                     <Button

@@ -5,7 +5,7 @@ import {
     LOGIN_ROUTE, ORDER_ROUTE,
     PRODUCT_ROUTE, PURCHASE_ROUTE,
     REGISTRATION_ROUTE,
-    SHOP_ROUTE, SHOW_ORDERS_ROUTE
+    SHOP_ROUTE, SHOW_ORDERS_ROUTE, USER_ROUTE
 } from "./utils/constRoutes";
 import mainPage from "./Pages/mainPage";
 import authPage from "./Pages/authPage";
@@ -14,6 +14,7 @@ import basketPage from "./Pages/basketPage";
 import orderPage from "./Pages/orderPage";
 import purchasePage from "./Pages/purchasePage";
 import manageOrdersPage from "./Pages/manageOrdersPage";
+import userPage from "./Pages/userPage";
 
 export const authRoutes = [
 
@@ -28,6 +29,10 @@ export const authRoutes = [
     {
         path: ORDER_ROUTE + '/:id' ,
         Component: orderPage
+    },
+    {
+        path: USER_ROUTE + '/:id' ,
+        Component: userPage
     },
 
 
