@@ -11,26 +11,23 @@ import {fetchUsersArray} from "../http/userApi";
 const OrderList = observer(() => {
 
         let [orders, setOrders] = useState([])
-        let [orderUsers, setOrderUsers] = useState([])
 
     useEffect(() => {
 
-        fetchOrders().then(data => {
+        fetchOrders().then(orders => {
 
-            let fetched_orders = data
+
             let ids = []
-            data.map(ord => ids.push(ord.user))
+            orders.map(ord => ids.push(ord.user))
 
             if (ids.length > 0) {
-                console.log("IDS > 0" + ids)
-                fetchUsersArray(ids).then(data => {
-                    console.log(data)
-                    setOrderUsers(data)
-                    setOrders(fetched_orders)
+                fetchUsersArray(ids).then(users => {
+                    orders.map(order => order.fullUser = users.find(user => user._id === order.user))
+                    setOrders(orders)
                 })
-            } else {
-                console.log("IDS = 0" + ids)
+
             }
+
         })
 
 
@@ -68,7 +65,6 @@ const OrderList = observer(() => {
 
     const removeOrder = (order, index) => {
 
-
         const newArray = [...orders].filter(ord => ord._id !== order._id);
         setOrders(newArray)
         deleteOrder(order._id).then(data =>
@@ -105,7 +101,7 @@ const OrderList = observer(() => {
 
                                     <td> {idx + 1}</td>
                                     <td style={{verticalAlign: "middle", textAlign: "center"}}>
-                                        { orderUsers?.[0]?.email    /*(orderUsers.find(user => user._id === order.user)).email*/}
+                                        { order.fullUser.email }
                                     </td>
                                     <td style={{verticalAlign: "middle", textAlign: "center"}}>
                                         {order.address.street + " " + order.address.house_num} </td>

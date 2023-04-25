@@ -1,12 +1,15 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {Button, Card, Col, Container} from "react-bootstrap";
-import {PRODUCT_ROUTE} from "../utils/constRoutes";
+import {BASKET_ROUTE, PRODUCT_ROUTE} from "../utils/constRoutes";
 import {useNavigate} from "react-router-dom";
 
 import {observer} from "mobx-react-lite";
 import {fetchReviews} from "../http/productApi";
 import Rating from "./Rating";
 import {Context} from "../index";
+import AddToCartModal from "./modals/AddToCartModal";
+import AuthorizeFirstModal from "./modals/AuthorizeFirstModal";
+import RatingAlt from "./RatingAlt";
 
 const ProductItem = observer(({product}) => {
 
@@ -14,28 +17,15 @@ const ProductItem = observer(({product}) => {
         const navigate = useNavigate()
 
         const [isHovered, setIsHovered] = useState(false);
+        const {user} = useContext(Context)
 
-        const [rating, setRating] = useState(0)
-        const {reviewsContext, product: products} = useContext(Context)
+        const [cartVisible, setCartVisible] = useState(false)
+        const [authorizeVisible, setAuthorizeVisible] = useState(false)
+
+        const {product: products, basket} = useContext(Context)
 
         useEffect(() => {
-            let rates = []
-            let average = 0
-            fetchReviews(product._id).then(data => {
-                reviewsContext.setReviews(data)
-            }).then(() => {
 
-                    reviewsContext.reviews.map(rev => rates.push(rev.rating))
-                rates.length === 0 ?
-
-                    setRating(5)
-
-                    :
-                    average = rates.reduce((a, b) => a + b) / rates.length
-                    setRating(average)
-
-                }
-            )
         }, [])
 
         return (
@@ -44,14 +34,19 @@ const ProductItem = observer(({product}) => {
 
                 {
 
-                    <Container className={products.limit === 2 && "d-flex m-auto justify-content-center" }>
+                    <Container className={products.limit === 2 && "d-flex m-auto justify-content-center"}>
                         <Card
 
                             onMouseEnter={() => setIsHovered(true)}
                             onMouseLeave={() => setIsHovered(false)}
-                            onClick={() =>{
-                                products.setCurrentRating(rating)
-                                navigate(PRODUCT_ROUTE + '/' + product._id)
+                            onClick={(event) => {
+                                if (event.target.tagName !== 'BUTTON') {
+                                    console.log("NOT A BUTTON")
+                                    products.setCurrentProduct(product)
+                                    navigate(PRODUCT_ROUTE + '/' + product._id)
+                                }
+
+
                             }
                             }
                             style={{
@@ -81,7 +76,8 @@ const ProductItem = observer(({product}) => {
                                     {product.price}$
                                 </Card.Text>
                                 <Container className={"d-flex justify-content-center mb-3"}>
-                                    <Rating rating={rating} product_id={product._id} editable={false}></Rating>
+                                    <RatingAlt rating={product.averageRating} readOnly={true}
+                                    ></RatingAlt>
                                 </Container>
                                 <Button
 
@@ -94,17 +90,23 @@ const ProductItem = observer(({product}) => {
                                     }}
                                     className={"d-flex m-auto btn-success"}
                                     onClick={() => {
-                                        console.log("RATINGHERRRRRRRRRRRRRRRRRRRRRRRRRRRRRR " + rating)
-                                        products.setCurrentRating(rating)
-                                        navigate(PRODUCT_ROUTE + '/' + product._id)
-                                        console.log(PRODUCT_ROUTE + '/' + product._id)
+                                        user.isAuth ?
+                                            setCartVisible(true)
+                                            :
+                                            setAuthorizeVisible(true)
+
+
                                     }
 
-                                    }>detail</Button>
+                                    }>to cart</Button>
 
 
                             </Card.Body>
                         </Card>
+                        <AddToCartModal product={product} onHide={() => setCartVisible(false)}
+                                        show={cartVisible}></AddToCartModal>
+                        <AuthorizeFirstModal onHide={() => setAuthorizeVisible(false)}
+                                             show={authorizeVisible}></AuthorizeFirstModal>
                     </Container>
 
 

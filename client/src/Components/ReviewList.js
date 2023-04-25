@@ -8,35 +8,33 @@ import {fetchReviews} from "../http/productApi";
 
 const ReviewList = observer(({product_id}) => {
 
-        let [reviews, setReviews] = useState([])
+       // let [reviews, setReviews] = useState([])
+        let [loading, setLoading] = useState(true); // Add a loading state
 
 
         const {reviewsContext} = useContext(Context)
         useEffect(() => {
-            console.log("STARTING USE EFFECT " + product_id)
             fetchReviews(product_id).then(data => {
-                setReviews(data)
+               // setReviews(data)
                 reviewsContext.setReviews(data)
-                console.log("REVIEWS " +reviewsContext.reviews)
+                setLoading(false);
 
             })
         }, [])
 
         return (
             <Container className={"mt-4"}>
-                {reviewsContext.reviews.length === 0 ?
-                   (<></>)
-                    :
+                {loading ? ( // Display loading state if loading is true
+                    <div>Loading reviews...</div>
+                ) : reviewsContext.reviews.length === 0 ? (
+                    <div>No reviews found.</div>
+                ) : (
                     <Row className="d-flex m-auto">
-                        {
-
-                            reviewsContext.reviews.map(
-                                review => <ReviewItem key={review._id} review={review}/>
-                            )
-
-                        }
+                        {reviewsContext.reviews.map((review) => (
+                            <ReviewItem key={review._id} review={review}/>
+                        ))}
                     </Row>
-                }
+                )}
             </Container>
         );
     }

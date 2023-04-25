@@ -22,14 +22,16 @@ export const fetchOneProduct = async (id) => {
     return data
 }
 
-export const fetchProducts = async (cat, search, page, limit) => {
+export const fetchProducts = async (cat, search, page, limit, priceRange, alphabetOrder) => {
 
     const {data} = await $host.get('product/', {
         params: {
             category: cat,
             search: search,
             page: page,
-            limit: limit
+            limit: limit,
+            priceRange: priceRange,
+            alphabetOrder: alphabetOrder
         }
     })
 

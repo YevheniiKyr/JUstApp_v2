@@ -4,7 +4,7 @@ import {Button, Container, Row} from "react-bootstrap";
 
 import {observer} from "mobx-react-lite";
 import {useNavigate, useParams} from "react-router-dom";
-import {fetchBasketById} from "../http/cartApi";
+import {fetchBasketById, fetchProductsFromBasket} from "../http/cartApi";
 import {fetchProductsArray} from "../http/productApi";
 import ProductItemInBasket from "../Components/productItemInBasket";
 import {ORDER_ROUTE} from "../utils/constRoutes";
@@ -18,80 +18,67 @@ const BasketPage = observer(() => {
 
     const navigate = useNavigate()
 
+    const [loading, setLoading] = useState(true)
 
-      useEffect(() => {
-
-               fetchBasketById(id).then(data => {
-                   console.log("FETCH BASKET")
-                   basket.setBasket(data)
-                   let ids = []
-
-                   basket.basket.products.map((prod) => ((prod.product !== undefined) ? ids.push(prod.product) : {}))
-               //    basket.basket.products.map((prod) => ( ids.push(prod.product)))
-
-                   if (ids.length > 0) {
-                       console.log("SET PRODS")
-                       fetchProductsArray(ids).then(data => {
-                           basket.setProducts(data)
-                           let amounts = []
-                           basket.products.map(prod => amounts.push(basket.basket.products.find(({product}) => product === prod._id).amount))
-                           setAmounts(amounts)
-                       })
-
-                   }
-
-               })
-           }
-
-           , [])
+    useEffect(() => {
 
 
-    const [amounts, setAmounts] = useState([])
+            fetchProductsFromBasket(id).then(data => {
+                console.log("DATA BASKET " + data.length)
+                basket.setProducts(data)
+                setLoading(false)
+            })
+
+        }
+
+        , [])
 
 
     return (
 
+        loading ?
+            <Container> loading ...</Container>
+            :
+            <Container>
+                {
 
-                <Container >
-                    {
-                        (basket.products.length === 0) ?
 
-                            <img className={"d-flex m-auto"}
-                                 src={ require("../static/cart_rofl.webp") } width={"500rem"} alt={"basket"}/>
+                    basket.products.length ?
 
-                            :
-                            (
+                        (
+                            <Container>
                                 <Row className="d-flex m-auto">
                                     {
                                         basket.products.map(
-                                            (prod, index) => <ProductItemInBasket key={prod._id} product={prod}
-                                                                                  amount={amounts[index]}
+                                            prod => <ProductItemInBasket key={prod._id} product={prod.product}
+                                                                         amount={prod.amount}
                                             />)
 
                                     }
                                 </Row>
-                            )
-                    }
+                                <Container className={"d-flex justify-content-center mt-5 "}
+                                >
+                                    <Button
+                                        size={"lg"}
+                                        onClick={() => navigate(ORDER_ROUTE + '/' + basket.basket._id)}
+                                        style={{margin: 5, background: "#F59B56", border: "none"}}
 
-                    {
-                        (basket.products.length !== 0) ?
-                            <Container className={"d-flex justify-content-center mt-5 "}
-                            >
-                            <Button
-                                size={"lg"}
-                                onClick={() => navigate(ORDER_ROUTE + '/' + basket.basket._id)}
-                                style={{margin: 5, background: "#F59B56", border: "none"}}
-
-                            >
-                                Переглянути замовлення
-                            </Button>
+                                    >
+                                        Переглянути замовлення
+                                    </Button>
                                 </Container>
-                            :
-                            <></>
-                    }
+                            </Container>
+                        )
+                        :
+                        <img className={"d-flex m-auto"}
+                             src={require("../static/cart_rofl.webp")} width={"500rem"} alt={"basket"}/>
 
-                </Container>
-            );
+
+                }
+
+
+            </Container>
+    );
 
 
 })

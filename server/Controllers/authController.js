@@ -21,11 +21,11 @@ class AuthController {
     async signup(req, res) {
 
         try {
-            const {email, password, birthdate, role} = req.body
-            const date_format = new Date(birthdate)
+            const {email, password, role} = req.body
+           // const date_format = new Date(birthdate)
             console.log("email" + email)
             if (!email || !password) {
-                return (res.status(400).json("You didn't input password or email  "))
+                return (res.status(400).json({message:"You didn't input password or email  "}))
             }
 
             const existingUser = await User.findOne({
@@ -33,18 +33,16 @@ class AuthController {
             })
             console.log('USERHERE' + existingUser)
             if (existingUser) {
-                return res.status(400).json(`You already have account with ${email}  `)
+                return res.status(400).json({message: `Це ім'я вже зайнято: ${email} `})
             }
             const hashPass = await bcrypt.hash(password, 3)
             console.log('WE ARE HERE' + existingUser)
-            console.log("BIRTHDATE" + birthdate)
-            console.log(date_format)
 
-            const user = await User.create({email: email, password: hashPass, role: role, birthdate: date_format})
+            const user = await User.create({email: email, password: hashPass, role: role})
             console.log('WE CREATED USER' + user)
 
             const basket = await Basket.create({user: user._id})
-            const token = genJWT(user._id, user.email, user.role )
+            const token = genJWT(user._id, user.email, user.role)
             console.log(token)
             return res.json({token: token})
         }
@@ -59,12 +57,12 @@ class AuthController {
         const {email, password} = req.body
         const user = await User.findOne({email: email})
         if (!user) {
-            return res.status(400).json("You didn't input password or email right  ")
+            return res.status(400).json({message: "You didn't input password or email!!!! right  "})
 
         }
         let equalPasswords = bcrypt.compareSync(password, user.password)
         if (!equalPasswords) {
-            return res.status(400).json("You didn't inputpassword or email right  ")
+            return res.status(400).json({message: "You didn't input password!!! or email right  "})
         }
         const token = genJWT(user._id, user.email, user.role)
         return res.json({token})

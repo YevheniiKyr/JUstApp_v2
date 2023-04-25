@@ -5,6 +5,7 @@ import AddCategory from "../Components/modals/AddCategory";
 import AddProduct from "../Components/modals/AddProduct";
 import {useNavigate} from "react-router-dom";
 import {SHOW_ORDERS_ROUTE} from "../utils/constRoutes";
+import RatingAlt from "../Components/RatingAlt";
 
 const AdminPage = () => {
 
@@ -27,6 +28,7 @@ const AdminPage = () => {
 
 
         </Container>
+
     );
 };
 

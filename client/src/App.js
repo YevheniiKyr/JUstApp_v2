@@ -25,6 +25,7 @@ function App() {
         }
 
         if (localStorage.getItem('token')) {
+
             check().then(user_data => {
                 user.setUser(user_data)
                 user.setIsAuth(true)

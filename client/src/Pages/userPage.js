@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {Context} from "../index";
 import {Button, Card, Container, Form} from "react-bootstrap";
 import Rating from "../Components/Rating";
@@ -8,16 +8,24 @@ import {FcMoneyTransfer} from "react-icons/fc";
 const UserPage = () => {
     const {user} = useContext(Context)
 
+
     function editName(_id) {
 
     }
+
+     useEffect(() => {
+
+    })
 
     return (
         <Container className={"d-flex justify-content-center"}>
 
             <Card
                 style={{width: '40vw', border: 'none', boxShadow: "0 4px 8px rgba(0,0,0,0.2)", marginTop: "3rem"}}>
-                <Card.Img src={require('../static/user.png')}
+                <Card.Img src={
+
+                    require('../static/user.png')
+                }
                           style={{width: '18vw', height: '18vw', alignSelf: "center", marginTop: "5vw",}}/>
                 <Card.Body>
                     <Card.Title className={"d-flex justify-content-center"}

@@ -1,13 +1,16 @@
 import React, {useEffect, useState} from 'react';
-import {FaStar} from 'react-icons/fa';
+import {FaStar, FaStarHalf, FaStarHalfAlt} from 'react-icons/fa';
 import {Container} from "react-bootstrap";
 import {fetchReviews} from "../http/productApi";
 
-function Rating({rating, onRate, editable, product_id, size}) {
+function Rating({rating, onRate, editable, product_id, size, reviews_length}) {
 
     const [hoverRating, setHoverRating] = useState(0);
     const [ratingEdit, setRatingEdit] = useState(rating);
     const [color, setColor] = useState("")
+
+    const fullStars = Math.floor(rating)
+    const partStar = rating - fullStars
     const handleMouseEnter = (value) => {
         setHoverRating(value);
     };
@@ -26,22 +29,16 @@ function Rating({rating, onRate, editable, product_id, size}) {
     const stars = [1, 2, 3, 4, 5]
 
     useEffect(() => {
-        if (product_id) {
-            let rates = []
-            let average = 0
-            fetchReviews(product_id).then(data => {
-                    if (data.length === 0) {
-                        setColor("green")
-                        setRatingEdit(5)
-                    } else {
-                        data.map(rev => rates.push(rev.rating))
-                        average = rates.reduce((a, b) => a + b) / rates.length
-                        setRatingEdit(average)
-                    }
-                }
-            )
+            // if (product_id) {
+            //     if(reviews_length === 0) {
+            //         setColor("green")
+            //         setRatingEdit(5)
+            //     }
+            //     console.log(Math.floor(rating))
+
+
         }
-    }, [])
+        , [])
 
     return (
         editable ?
@@ -69,14 +66,21 @@ function Rating({rating, onRate, editable, product_id, size}) {
             )
             :
             (
-                stars.map(star => {
+                stars.map((star, idx) => {
                         return (
+                            idx === fullStars && partStar >= 0.5 ?
+                                <FaStarHalfAlt
+                                    color={'#ffc107'}
+                                    size={size || 25}
+                                    style={{marginRight: 10, cursor: 'pointer'}}
 
-                            <FaStar
-                                color={(star <= (ratingEdit)) ? (color? color : '#ffc107' ) : '#e4e5e9'}
-                                size={size || 25}
-                                style={{marginRight: 10, cursor: 'pointer'}}
-                            />
+                                />
+                                :
+                                <FaStar
+                                    color={(star <= (rating)) ? (color ? color : '#ffc107') : '#e4e5e9'}
+                                    size={size || 25}
+                                    style={{marginRight: 10, cursor: 'pointer'}}
+                                />
                         )
                     }
                 )))

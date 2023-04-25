@@ -12,3 +12,5 @@ export const ORDER_ROUTE = '/order'
 export const CHECK_ORDER_ROUTE = '/check_order'
 
 export const SHOW_ORDERS_ROUTE = '/show_orders'
+
+export const RECOMMENDATIONS_ROUTE = '/recommendations'

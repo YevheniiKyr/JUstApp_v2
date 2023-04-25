@@ -3,7 +3,7 @@ import {
     ADMIN_ROUTE,
     BASKET_ROUTE,
     LOGIN_ROUTE, ORDER_ROUTE,
-    PRODUCT_ROUTE, PURCHASE_ROUTE,
+    PRODUCT_ROUTE, PURCHASE_ROUTE, RECOMMENDATIONS_ROUTE,
     REGISTRATION_ROUTE,
     SHOP_ROUTE, SHOW_ORDERS_ROUTE, USER_ROUTE
 } from "./utils/constRoutes";
@@ -15,6 +15,7 @@ import orderPage from "./Pages/orderPage";
 import purchasePage from "./Pages/purchasePage";
 import manageOrdersPage from "./Pages/manageOrdersPage";
 import userPage from "./Pages/userPage";
+import recommendationsPage from "./Pages/recommendationsPage";
 
 export const authRoutes = [
 
@@ -33,6 +34,10 @@ export const authRoutes = [
     {
         path: USER_ROUTE + '/:id' ,
         Component: userPage
+    },
+    {
+        path: RECOMMENDATIONS_ROUTE,
+        Component: recommendationsPage
     },
 
 
